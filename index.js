@@ -42,12 +42,12 @@ const server = ({httpServer, port}, routes) => {
   if (!httpServer) {
     const { createServer } = require('http');
     httpServer = createServer();
-    
+
     httpServer.listen(port, () => {
       console.log(`listening on ${port}`);
     });
   }
-  
+
 	const socketServer = new websocket.server({
   	httpServer,
   	autoAcceptConnections: false
@@ -58,6 +58,9 @@ const server = ({httpServer, port}, routes) => {
   	return true;
 	};
 
+  const connections = [];
+  let connection;
+
 	socketServer.on('request', request => {
   	if (!originIsAllowed(request.origin)) {
   		// Make sure we only accept requests from an allowed origin
@@ -66,8 +69,9 @@ const server = ({httpServer, port}, routes) => {
   		return;
   	}
 
-    const connection = socketConnection(request);
-      
+    connection = socketConnection(request);
+    connections.push(connection);
+
     const routeHandler = message => {
       let data;
       if (message.type) {
@@ -76,33 +80,35 @@ const server = ({httpServer, port}, routes) => {
             data = message.binaryData.toString();
             break;
           default:
-            
+
         }
       }
+      console.log(message);
       const { route, params, url } = JSON.parse(data.toString());
       if (routes[url]) routes[url](params, response(connection, url));
       else return `nothing found for ${message.url}`;
     };
-    
+
     connection.on('message', routeHandler);
 	});
-  
+
   return {
     close: () => {
-      socketServer.shutDown(); 
-    }
+      socketServer.shutDown();
+    },
+    connections: () => connections
   };
 };
 const clientConnection = (port = 6000, protocol = 'echo-protocol') => {
   const pubsub = new PubSub();
-  
+
   const onerror = error => {
     pubsub.publish('error', error);
   };
 
   const onmessage = message => {
     const {value, url, status} = JSON.parse(message.data.toString());
-    
+
     if (status === 200) {
       pubsub.publish(url, value);
     } else {
@@ -118,7 +124,7 @@ const clientConnection = (port = 6000, protocol = 'echo-protocol') => {
   const on = (url, cb) => {
     pubsub.subscribe(url, cb);
   };
-  
+
   /**
    * @param {string} type
    * @param {string} name
@@ -132,7 +138,7 @@ const clientConnection = (port = 6000, protocol = 'echo-protocol') => {
       send(client, request);
     });
   };
-  
+
   const clientConnection = client => {
     return {
       request: req => request(client, req),
@@ -145,7 +151,7 @@ const clientConnection = (port = 6000, protocol = 'echo-protocol') => {
       }
     }
   };
-  
+
   return new Promise(resolve => {
     const init = () => {
       const client = new websocket.w3cwebsocket(`ws://localhost:${port}/`, protocol);
@@ -165,7 +171,7 @@ const clientConnection = (port = 6000, protocol = 'echo-protocol') => {
       };
     };
     return init();
-  });    
+  });
 };
 
 exports.server = server;

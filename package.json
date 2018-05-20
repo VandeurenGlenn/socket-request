@@ -9,10 +9,12 @@
   "private": false,
   "scripts": {
     "build": "rollup -c",
-    "test": "node test.js"
+    "test": "node test.js",
+    "all": "yarn build && yarn test"
   },
   "dependencies": {
     "PubSub": "^3.4.0",
+    "socket-request-client": "^0.1.0",
     "websocket": "^1.0.26"
   },
   "devDependencies": {

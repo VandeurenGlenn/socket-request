@@ -199,6 +199,13 @@ rollup@^0.58.2:
     "@types/estree" "0.0.38"
     "@types/node" "*"
 
+socket-request-client@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/socket-request-client/-/socket-request-client-0.1.0.tgz#e982035e4bfc41c38bae6ced03299a2cb986adb8"
+  dependencies:
+    PubSub "^3.4.0"
+    websocket "^1.0.26"
+
 string.prototype.trim@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/string.prototype.trim/-/string.prototype.trim-1.1.2.tgz#d04de2c89e137f4d7d206f086b5ed2fae6be8cea"
