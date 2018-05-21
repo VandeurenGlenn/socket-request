@@ -2,13 +2,13 @@
  * @module socketResponse
  *
  * @param {object} connection socket connection
- * @param {string} route the route to handle
+ * @param {string} url the request url
  */
 export default (connection, url) => {
   return {
-    send: (text = 'ok') => connection.send(
-      JSON.stringify({url, status: 200, value: text})
+    send: (data = 'ok', status = 200) => connection.send(
+      JSON.stringify({url, status, value: data})
     ),
-    error: text => connection.send(JSON.stringify({url, value: text}))
+    error: data => connection.send(JSON.stringify({url, value: data}))
   }
 }

@@ -1,7 +1,7 @@
-/* socket-request version 0.1.0 */
+/* socket-request version 0.1.2 */
 'use strict';
 
-const ENVIRONMENT = {version: '0.1.0', production: true};
+const ENVIRONMENT = {version: '0.1.2', production: true};
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
@@ -27,14 +27,14 @@ var socketConnection = request => {
  * @module socketResponse
  *
  * @param {object} connection socket connection
- * @param {string} route the route to handle
+ * @param {string} url the request url
  */
 var response = (connection, url) => {
   return {
-    send: (text = 'ok') => connection.send(
-      JSON.stringify({url, status: 200, value: text})
+    send: (data = 'ok', status = 200) => connection.send(
+      JSON.stringify({url, status, value: data})
     ),
-    error: text => connection.send(JSON.stringify({url, value: text}))
+    error: data => connection.send(JSON.stringify({url, value: data}))
   }
 }
 
@@ -83,7 +83,6 @@ const server = ({httpServer, port}, routes) => {
 
         }
       }
-      console.log(message);
       const { route, params, url } = JSON.parse(data.toString());
       if (routes[url]) routes[url](params, response(connection, url));
       else return `nothing found for ${message.url}`;
