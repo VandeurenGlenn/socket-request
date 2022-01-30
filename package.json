@@ -13,7 +13,7 @@
     "all": "yarn build && yarn test"
   },
   "dependencies": {
-    "socket-request-client": "^0.2.0",
+    "socket-request-client": "^0.8.1",
     "socket-request-server": "^0.2.0"
   },
   "devDependencies": {
