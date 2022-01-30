@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "socket-request-client": "^0.2.0",
-    "socket-request-server": "^0.2.0"
+    "socket-request-server": "^0.6.1"
   },
   "devDependencies": {
     "rollup": "^0.58.2",
